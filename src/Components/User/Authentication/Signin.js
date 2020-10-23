@@ -12,20 +12,13 @@ function Signin(props) {
 
     useEffect(() => {
         setErrors(props.errors)
-        console.log(props.errors, 'signin')
     }, [props.errors]);
+    
     const onClick = (event) => {
         event.preventDefault();
-      
-            let userObj = { email, password };
-            props.SigninRequest(userObj, props.history)
-            // .then(() => {
-            //     props.history.push('/dashboard');
+        let userObj = { email, password };
+        props.SigninRequest(userObj, props.history)
 
-            // }).catch((err) => {
-            //     console.log(err)
-            // })
-     
     }
     return (
         <div className="user-ath-page">
@@ -42,9 +35,9 @@ function Signin(props) {
                             <form className="user-ath-form">
                                 {/* <!-- error shown here--> */}
                                 {Object.keys(errors).length !== 0 && (<div className="note note-lg note-no-icon note-danger">
-                                <p>{errors.email}</p>
-                                <p> {errors.password}</p>
-                                <p> {errors.error}</p>
+                                    <p>{errors.email}</p>
+                                    <p> {errors.password}</p>
+                                    <p> {errors.message}</p>
                                 </div>)}
                                 {/* <!-- end of error--> */}
                                 <div className="input-item">

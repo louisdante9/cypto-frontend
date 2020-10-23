@@ -1,27 +1,24 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import swal from 'sweetalert';
 import { connect } from 'react-redux';
-import { logout, fetchAdminTrans, updateTransaction } from '../../actions';
+import { logout, fetchUsers } from '../../actions';
 import AdminHeader from '../Commons/AdminHeader'
 import AdminSideNav from '../Commons/AdminSideNav'
 
-function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, updateTransaction }) {
+function Users({ logout, history, user, fetchUsers, users }) {
   const [active, setActive] = useState(false);
-  const [transactionList, setTransactionList] = useState([]);
+  const [userList, setUserList] = useState([]);
 
 
 
   useEffect(() => {
-    fetchAdminTrans();
-  }, [user, fetchAdminTrans]);
+    fetchUsers();
+  }, [fetchUsers]);
 
   useEffect(() => {
-    setTransactionList(transactions)
-  }, [transactions]);
-
-
+    setUserList(users)
+  }, [users]);
   const logOut = (event) => {
     event.preventDefault();
     logout()
@@ -30,22 +27,6 @@ function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, 
 
   const toggleClass = () => {
     setActive(!active)
-  }
-
-  const handleTransApproval = ({_id: id, btcAmt, payment, gains, userId}) => {
-
-    swal("Are you sure you want to approve this?", {
-      buttons: ["Oh noez!", "Aww yiss!"],
-    }).then((willDelete) => {
-      if (willDelete) {
-        updateTransaction(id, {btcAmt, payment, gains, userId})
-        swal("Poof! transaction has been approved!", {
-          icon: "success",
-        });
-      } else {
-        swal("No updates were made!");
-      }
-    });
   }
   return (
     <Fragment>
@@ -58,9 +39,9 @@ function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, 
 
               <div className="user-content">
                 <div className="user-panel">
-                  <h2 className="user-panel-title">Transactions</h2>
+                  <h2 className="user-panel-title">Clients</h2>
                   {/* if there is no transaction you can use this code */}
-                  {transactionList.length > 0 ?
+                  {userList.length > 0 ?
 
                     <div id="DataTables_Table_0_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
                       <div className="row"><div className="col-10 text-left">
@@ -88,39 +69,49 @@ function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, 
                         <div className="col-12"><div className="overflow-x-auto"><table className="data-table tranx-table dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                           <thead>
                             <tr role="row"><th className="tranx-status sorting_disabled" rowSpan={1} colSpan={1} />
-                              <th className="tranx-no sorting_disabled" rowSpan={1} colSpan={1}><span>TNX NO</span></th>
-                              <th className="tranx-token sorting_disabled" rowSpan={1} colSpan={1}><span>Tokens</span></th>
+                              <th className="tranx-no sorting_disabled" rowSpan={1} colSpan={1}><span>Username</span></th>
+                              <th className="tranx-token sorting_disabled" rowSpan={1} colSpan={1}><span>Acc Bal</span></th>
                               <th className="tranx-amount sorting_disabled" rowSpan={1} colSpan={1}>
-                                <span>Amount</span>
+                                <span>Plan Type</span>
                               </th>
                               <th className="tranx-amount sorting_disabled" rowSpan={1} colSpan={1}>
                                 <span>Earnings</span>
                               </th>
 
                               <th className="tranx-action sorting_disabled" rowSpan={1} colSpan={1} />
+
                             </tr>
                           </thead>
                           <tbody>
-                            {transactionList.map(transaction => {
+                            {userList.map(user => {
                               return (
-                                <tr role="row" className={transaction.status === 'pending' ? 'odd' : 'even' } key={transaction._id} onClick={transaction.status === 'pending' ? () => handleTransApproval(transaction) : null} style={{ cursor: 'pointer' }}>
-                                  {transaction.status === 'pending' ? <td className="tranx-status tranx-status-pending">
+                                <tr role="row" className={user.status === true ? 'odd' : 'even'} key={user._id} >
+                                  {user.status !== true ? <td className="tranx-status tranx-status-pending">
                                     <span className="d-none">Pending</span>
-                                    <em className="ti ti-alert"  />
+                                    <em className="ti ti-alert" />
                                   </td> :
                                     <td className="tranx-status tranx-status-approved">
+
                                       <span className="d-none">Approved</span>
-                                      <em className="ti ti-check"/>
+                                      <em className="ti ti-check" />
                                     </td>}
-                                  <td className="tranx-no"><span>{transaction.username}</span>{moment(transaction.createdAt).format('DD MMM, YY h:mm A')}</td>
-                                  <td className="tranx-token"><span>{transaction.btcAmt}</span>BTC</td>
-                                  <td className="tranx-amount"><span>{transaction.payment}</span>USD </td>
-                                  <td className="tranx-amount"><span>{transaction.gains}</span>USD </td>
+                                    <td className="tranx-no">
+                                  <Link to={`/users/${user._id}`} style={{ fontSize: '15px'}}>
+                                    <span>{user.username}</span>
+                                  </Link>
+                                    <span>
+                                    {moment(user.createdAt).format('DD MMM, YY h:mm A')}
+                                    </span>
+                                    </td>
+                                  <td className="tranx-token"><span>{user.accountBal}</span>USD</td>
+                                  <td className="tranx-amount"><span>{user.planType}</span> </td>
+                                  <td className="tranx-amount"><span>{user.earnedTotal}</span> </td>
                                   {/* <td className="tranx-action">
                                                             <a href="#" data-toggle="modal" data-target="#tranxApproved"><em className="ti ti-more-alt" /></a>
                                                         </td> */}
                                   {/* use this later for version 2 */}
-                                </tr>)
+                                </tr>
+                              )
                             })}
                             {/* 
                                                         * use this later for version 2 *
@@ -171,8 +162,7 @@ function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, 
                           <em className="ti ti-close" />
                         </div>
                       </div>
-                      <span className="status-text">You have not contributed yet! You should make some.</span>
-                      <a href="tokens.html" className="btn btn-primary">Contribute Now</a>
+                      <span className="status-text">You have no clients records yet!.</span>
                     </div>}
                 </div>
               </div>
@@ -203,6 +193,6 @@ function AdminDashboard({ logout, history, user, fetchAdminTrans, transactions, 
 }
 const mapStateToProps = state => ({
   user: state.setCurrentUser.user,
-  transactions: state.getAdminTransactions.transactions || []
+  users: state.getUsers.users || []
 });
-export default connect(mapStateToProps, { logout, fetchAdminTrans, updateTransaction })(withRouter(AdminDashboard))
+export default connect(mapStateToProps, { logout, fetchUsers })(withRouter(Users))

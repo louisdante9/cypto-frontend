@@ -18,7 +18,6 @@ function Signup(props) {
 
     useEffect(() => {
         setErrors(props.errors)
-        console.log(props.errors,'hello there')
     }, [props.errors]);
 
     const handleSubmit = (e) => {

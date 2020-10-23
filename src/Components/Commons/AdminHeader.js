@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import btcValue from 'btc-value';
 import { connect } from 'react-redux';
 import { logout } from '../../actions';
 
-function Header({ toggleClass, active, logOut, user }) {
-
-  const rand = (n) => {
-    let r = Math.random().toString(36).substring(n);
-    return r.toUpperCase()
-  }
-
+function AdminHeader({ toggleClass, active, logOut, user }) {
   return (
-
     <div className="topbar">
       <div className="topbar-md d-lg-none">
         <div className="container">
@@ -28,7 +20,7 @@ function Header({ toggleClass, active, logOut, user }) {
 
             <div className="site-logo">
               <a href="#" className="site-brand">
-                <img src="images/logo.png" alt="logo" srcSet="images/logo2x.png 2x" />
+                <img src="/images/logo.png" alt="logo" srcSet="/images/logo2x.png 2x" />
               </a>
             </div>
 
@@ -37,22 +29,10 @@ function Header({ toggleClass, active, logOut, user }) {
               <div className="dropdown-menu dropdown-menu-right">
                 <div className="user-dropdown">
                   <div className="user-dropdown-head">
-                    <h6 className="user-dropdown-name">{`${user.firstname} ${user.lastname}`} <span>({`${rand(4)}`})</span></h6>
                     <span className="user-dropdown-email">{`${user.email}`}</span>
                   </div>
-                  <div className="user-dropdown-balance">
-                    <h6>CYX BALANCE</h6>
-                    <h3>{user.accountBal} USD</h3>
-                    <ul>
-                      <li>{user.totalInvestment} BTC</li>
-                      <li>{user.earnedTotal} COX (INVESTMENT)</li>
-                    </ul>
-                  </div>
+              
                   <div className="gaps-1x"></div>
-                  <ul className="user-dropdown-links">
-                    <li><a href="account.html"><i className="ti ti-id-badge"></i>My Profile</a></li>
-                    <li><a href="activity.html"><i className="ti ti-eye"></i>Activity</a></li>
-                  </ul>
                   <ul className="user-dropdown-links">
                     <li><div onClick={logOut}><i className="ti ti-power-off"></i>Logout</div></li>
                   </ul>
@@ -67,7 +47,7 @@ function Header({ toggleClass, active, logOut, user }) {
           <div className="topbar-lg d-none d-lg-block">
             <div className="site-logo">
               <Link to="/" className="site-brand">
-                <img src="images/logo.png" alt="logo" srcSet="images/logo2x.png 2x" />
+                <img src="/images/logo.png" alt="logo" srcSet="/images/logo2x.png 2x" />
               </Link>
             </div>
           </div>
@@ -83,22 +63,10 @@ function Header({ toggleClass, active, logOut, user }) {
                 <div className="dropdown-menu dropdown-menu-right">
                   <div className="user-dropdown">
                     <div className="user-dropdown-head">
-                      <h6 className="user-dropdown-name">{`${user.firstname} ${user.lastname}`} <span>({`${rand(4)}`})</span></h6>
                       <span className="user-dropdown-email">{`${user.email}`}</span>
                     </div>
-                    <div className="user-dropdown-balance">
-                      <h6>CYX BALANCE</h6>
-                      <h3>{user.accountBal} USD</h3>
-                      <ul>
-                        <li>{user.totalInvestment} BTC</li>
-                        <li>{user.earnedTotal} COX (INVESTMENT)</li>
-                      </ul>
-                    </div>
+                  
                     <div className="gaps-1x"></div>
-                    <ul className="user-dropdown-links">
-                      <li><a href="account.html"><i className="ti ti-id-badge"></i>My Profile</a></li>
-                      <li><a href="activity.html"><i className="ti ti-eye"></i>Activity</a></li>
-                    </ul>
                     <ul className="user-dropdown-links">
                       <li><div onClick={logOut}><i className="ti ti-power-off"></i>Logout</div></li>
                     </ul>
@@ -112,5 +80,5 @@ function Header({ toggleClass, active, logOut, user }) {
     </div>
   )
 }
-export default connect(null, { logout })(withRouter(Header))
+export default connect(null, { logout })(withRouter(AdminHeader))
 

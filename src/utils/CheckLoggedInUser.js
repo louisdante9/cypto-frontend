@@ -12,7 +12,7 @@ const CheckLoggedInUser = (ComposedComponent) => {
      */
     componentWillMount () {
       if (this.props.isAuthenticated && (this.props.role === 'admin')) {
-        this.props.history.push('/admin/dashboard');
+        this.props.history.push('/users');
       } else if (this.props.isAuthenticated && (this.props.role === 'user')) {
         this.props.history.push('/dashboard');
       }
@@ -25,7 +25,7 @@ const CheckLoggedInUser = (ComposedComponent) => {
      */
     componentWillUpdate (nextProps) {
       if (this.props.isAuthenticated && (this.props.role === 'admin')) {
-        this.props.history.push('/admin/dashboard');
+        this.props.history.push('/users');
       } else if (this.props.isAuthenticated && (this.props.role === 'user')) {
         this.props.history.push('/dashboard');
       }

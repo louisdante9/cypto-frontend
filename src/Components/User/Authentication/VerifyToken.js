@@ -12,7 +12,6 @@ function VerifyToken(props) {
 
     useEffect(() => {
         setErrors(props.errors)
-        console.log(props.errors, 'errors')
     }, [props.errors]);
 
     const handleSubmit = (e) => {

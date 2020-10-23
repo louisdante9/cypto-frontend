@@ -11,23 +11,18 @@ function SideNav({ active, user }) {
                 <div className="user-image">
                     <img src={user.avatar} alt="thumb" />
                 </div>
-                <h6 className="user-name">{`${user.firstname} ${user.lastname}`}</h6>
-                <div className="user-uid">Status: <span style={{color: "limegreen" }}>{user.status ? 'Approved' : 'Revolked'}</span></div>
+                <h6 className="user-name" style={{color: "green"}}>{user.role.toUpperCase()}</h6>
             </div>
 
             <ul className="user-icon-nav">
-                <li><Link to="/dashboard"><em className="ti ti-dashboard"></em>Dashboard</Link></li>
-                <li><Link to="/minings"><em className="ti ti-pie-chart"></em>Mining Plans</Link></li>
-                <li><Link to="/transactions"><em className="ti ti-control-shuffle"></em>Transactions</Link></li>
-                {/* <li><a href="referrals.html"><em className="ti ti-infinite"></em>Referral</a></li> */}
-                <li><Link to="/profile"><em className="ti ti-user"></em>Account</Link></li>
-                {/* <li><a href="security.html"><em className="ti ti-lock"></em>Security</a></li> */}
+                <li><Link to="/users"><em className="ti ti-dashboard"></em>users</Link></li>
+                <li><Link to="/admin"><em className="ti ti-control-shuffle"></em>Transactions</Link></li>
             </ul>
             <div className="user-sidebar-sap"></div>
             <ul className="user-nav">
                 <li><a href="how-to.html">How to buy?</a></li>
                 <li><a href="faq.html">Faqs</a></li>
-                <li>Contact Support<span>info@icocrypto.com</span></li>
+                <li>Contact Support<span>info@email.com</span></li>
             </ul>
             <div className="d-lg-none">
                 <div className="user-sidebar-sap"></div>

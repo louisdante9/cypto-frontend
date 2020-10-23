@@ -28,7 +28,7 @@ function AdminLogin(props) {
                             </Link>
                         </div>
                         <div className="user-ath-box">
-                            <h4>Login to Your Account</h4>
+                            <h4>Login as Admin</h4>
                             <form className="user-ath-form">
                                 {/* <!-- error shown here--> */}
                                 {Object.keys(errors).length !== 0 && (<div className="note note-lg note-no-icon note-danger">
@@ -50,6 +50,9 @@ function AdminLogin(props) {
                             </form>
                         </div>
                         <div className="gaps-2x"></div>
+                        <div className="form-note">
+                            create Admin Account? <Link to="/createAdmin">Sign Up</Link>
+                        </div>
                     </div>
                 </div>
             </div>

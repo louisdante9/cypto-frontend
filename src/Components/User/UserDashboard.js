@@ -1,28 +1,23 @@
-import React, { Fragment, useState,useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import btcValue from 'btc-value';
-import { logout } from '../../actions';
+import moment from 'moment'
+// import btcValue from 'btc-value';
+import { logout, fetchTrans, fetchAUserDetails } from '../../actions';
 import Header from '../Commons/Header'
 import SideNav from '../Commons/SideNav'
 
-function UserDashboard({logout, history, user}) {
-  const [active, setActive]=useState(false);
-  const [btc, setBtc] = useState('');
-  const [inv, setInv] = useState('100')
-  const [pgrBar, setPgrBar] = useState('10%')
-  const gains = 7000;
+function UserDashboard({ logout, history, user, fetchTrans, fetchAUserDetails, transactions, getUser }) {
+  const [active, setActive] = useState(false);
+  const [pgrBar, setPgrBar] = useState('10%');
+  const [transactionList, setTransactionList] = useState([]);
+
+
+
   useEffect(() => {
-    btcValue.setApiKey('05aa5bf4-2aae-47f7-8d42-97b1dfe1a230');
-    btcValue({ isDecimal: true })
-      .then((value) => {
-        const currentInvestment = parseFloat(inv / value)
-        setBtc(currentInvestment.toFixed(4))
-      });
-  }, []);
-  useEffect(() => {
+    const gains = user.earnedTotal
     if (gains <= 0) {
-      return 
+      return
     } else if (gains > 0 && gains < 5000) {
       setPgrBar('30%')
     } else if (gains > 5001 && gains < 50000) {
@@ -33,25 +28,34 @@ function UserDashboard({logout, history, user}) {
       setPgrBar('75%')
     }
 
-  }, [gains]);
+  }, [user.earnedTotal]);
+  useEffect(() => {
+    fetchTrans(user.id);
+    fetchAUserDetails(user.id)
+  }, [user, fetchTrans, fetchAUserDetails]);
+
+  useEffect(() => {
+    setTransactionList(transactions)
+  }, [transactions]);
+
   const logOut = (event) => {
     event.preventDefault();
     logout()
     history.push('/signin');
   }
+
   const toggleClass = () => {
     setActive(!active)
   }
-
   return (
     <Fragment>
       <div className="user-dashboard">
-        <Header toggleClass={toggleClass} active={active} logOut={logOut} user={user} btc={btc} invst = {inv}/>/>
+        <Header toggleClass={toggleClass} active={active} logOut={logOut} user={getUser} />
         <div className="user-wraper">
           <div className="container">
             <div className="d-flex">
-              <SideNav active={active}/>
-              
+              <SideNav active={active} user={getUser} />
+
               <div className="user-content">
                 <div className="user-panel">
                   <div className="row">
@@ -62,8 +66,8 @@ function UserDashboard({logout, history, user}) {
                           INVESTMENTS IN 30 DAYS</h6>
                         <h1 className="tile-title">IC0X WALLET BALANCE: $100</h1>
                         <ul className="tile-list-inline">
-                          <li>{`${btc}`} BTC</li>
-                          <li>{`${inv}`} USD</li>
+                          <li>{`${user.totalInvestment}`} BTC</li>
+                          <li>{`${user.earnedTotal}`} USD</li>
                         </ul>
                       </div>
                     </div>
@@ -72,9 +76,9 @@ function UserDashboard({logout, history, user}) {
                         <div className="tile-bubbles"></div>
                         <h6 className="tile-title">YOUR INVESTMENT</h6>
                         <ul className="tile-info-list">
-                          <li><span>{`${btc}`}</span>BTC</li>
+                          <li><span>{`${user.totalInvestment}`}</span>BTC</li>
                           <li><span>~</span> = </li>
-                          <li><span>{`${inv}`}</span>USD</li>
+                          <li><span>{`${user.earnedTotal}`}</span>USD</li>
                         </ul>
                       </div>
                     </div>
@@ -112,7 +116,7 @@ function UserDashboard({logout, history, user}) {
                   <div className="progress-card">
                     <h4>Token Bonus </h4>
                     <ul className="progress-info">
-                      <li><span>Gains -</span> {gains} COX</li>
+                      <li><span>Gains -</span> ${user.earnedTotal} COX</li>
                     </ul>
                     <div className="progress-bar">
                       <div className="progress-hcap" style={{ width: "75%" }}>
@@ -132,37 +136,30 @@ function UserDashboard({logout, history, user}) {
                   </div>
                   <div className="gaps-3x"></div>
                   <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>PreSale</th>
-                          <th>Sale Stage 1</th>
-                          <th>Sale Stage 2</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><span>Start Date</span>03 July 2018</td>
-                          <td><span>Start Date</span>15 August 2018</td>
-                          <td><span>Start Date</span>28 October 2018</td>
-                        </tr>
-                        <tr>
-                          <td><span>End Date</span>19 July 2018</td>
-                          <td><span>End Date</span>02 September 2018</td>
-                          <td><span>End Date</span>16 November 2018</td>
-                        </tr>
-                        <tr>
-                          <td><span>Bonus</span>30%</td>
-                          <td><span>Bonus</span>20%</td>
-                          <td><span>Bonus</span>10%</td>
-                        </tr>
-                        <tr>
-                          <td><span>Soft Cap</span>$ 20M</td>
-                          <td><span>Hard Cap</span>$ 50M</td>
-                          <td><span>Hard Cap</span>$ 30M</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {transactionList.length > 0 ?
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>TNX NO</th>
+                            <th>Tokens</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transactionList.slice(0, 4).map(transaction => {
+                            return (
+                              <tr key={transaction._id}>
+                                <td ><span>{transaction.transactionNO}</span>{moment(transaction.createdAt).format('DD MMM, YY h:mm A')}</td>
+                                <td ><span>{transaction.btcAmt}</span>BTC</td>
+                                <td ><span>{transaction.payment}</span>USD </td>
+                              </tr>)
+                          })}
+
+                        </tbody>
+                      </table>
+                      : <div style={{ textAlign: "center" }}>
+                        You have not contributed yet! You should make some.
+                        </div>}
                   </div>
 
                 </div>
@@ -192,6 +189,9 @@ function UserDashboard({logout, history, user}) {
   );
 }
 const mapStateToProps = state => ({
-  user: state.setCurrentUser.user
+  user: state.setCurrentUser.user,
+  transactions: state.getUserTransactions.transactions || [],
+  getUser: state.getUser
+
 });
-export default connect(mapStateToProps, { logout })(withRouter(UserDashboard))
+export default connect(mapStateToProps, { logout, fetchTrans, fetchAUserDetails })(withRouter(UserDashboard))
