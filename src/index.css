@@ -1,0 +1,13 @@
+.input-item i {
+    position: absolute !important;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+}
+.input-item {
+    position: relative;
+}
+
+.error {
+    border-color: red;
+}
