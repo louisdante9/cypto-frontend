@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 import { logout, fetchTrans, fetchAUserDetails } from '../../actions';
 import Header from '../Commons/Header'
 import SideNav from '../Commons/SideNav'
+import WithState from '../../utils/WithState'
 
-function Transactions({ logout, history, user, fetchTrans, transactions, fetchAUserDetails, getUser }) {
-    const [active, setActive] = useState(false);
+function Transactions({ logout, history, user, fetchTrans, transactions, fetchAUserDetails, getUser, active, setActive }) {
+    // const [active, setActive] = useState(false);
     const [transactionList, setTransactionList] = useState([]);
 
   
@@ -175,10 +176,11 @@ function Transactions({ logout, history, user, fetchTrans, transactions, fetchAU
         </Fragment>
     );
 }
-const mapStateToProps = state => ({
-    user: state.setCurrentUser.user,
-    transactions: state.getUserTransactions.transactions || [],
-    getUser: state.getUser
-
-});
-export default connect(mapStateToProps, { logout, fetchTrans, fetchAUserDetails })(withRouter(Transactions))
+const mapStateToProps = state => {
+    console.log(state.getUser, 'this is bad react')
+    const user= state.setCurrentUser.user;
+    const transactions= state.getUserTransactions.transactions || [];
+    const getUser= state.getUser
+     return {user, transactions, getUser}
+};
+export default WithState(connect(mapStateToProps, { logout, fetchTrans, fetchAUserDetails })(withRouter(Transactions)))

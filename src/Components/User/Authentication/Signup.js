@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { registerUser } from '../../../actions';
-import classnames from 'classnames';
 
 
 function Signup(props) {
@@ -14,10 +13,11 @@ function Signup(props) {
     const [password_confirm, setConfirmPassword] = React.useState("");
     const [errors, setErrors] = useState({});
     const [planType, setPlanType] = React.useState('planA');
-
+    const [showPass, setShowPass] = useState(false);
 
     useEffect(() => {
         setErrors(props.errors)
+        console.log(props.errors)
     }, [props.errors]);
 
     const handleSubmit = (e) => {
@@ -34,6 +34,7 @@ function Signup(props) {
         }
         props.registerUser(user, props.history);
     }
+    const err = Object.keys(errors).length !== 0 ? 'error': ''
     return (
         <div className="user-ath-page">
             <div className="container">
@@ -48,32 +49,27 @@ function Signup(props) {
                             <h4>Creat New Account</h4>
                             <form action="signup-success.html" className="user-ath-form">
                                 {Object.keys(errors).length !== 0 && (<div className="note note-lg note-no-icon note-danger">
-                                <p>{errors.firstname}</p>
-                                <p>{errors.lastname}</p>
-                                <p>{errors.username}</p>
-                                <p>{errors.email}</p>
-                                <p> {errors.password}</p>
-                                <p>{errors.password_confirm}</p>
+                                <p>A Error occurs with your form submission. Please review and try again</p>
+                                
                                 </div>)}
                                 <div className="input-item">
-                                    <input type="text" placeholder="First Name" className={classnames('input-bordered', {
-                                        'is-invalid': errors.firstname
-                                    })} onChange={(e) => setFirstname(e.target.value)} />
+                                    <input type="text" placeholder="First Name" className={`input-bordered ${err}`} onChange={(e) => setFirstname(e.target.value)} />
                                 </div>
                                 <div className="input-item">
-                                    <input type="text" placeholder="Last Name" className="input-bordered" onChange={(e) => setLastname(e.target.value)} />
+                                    <input type="text" placeholder="Last Name" className={`input-bordered ${err}`} onChange={(e) => setLastname(e.target.value)} />
                                 </div>
                                 <div className="input-item">
-                                    <input type="text" placeholder="Username" className="input-bordered" onChange={(e) => setUsername(e.target.value)} />
+                                    <input type="text" placeholder="Username" className={`input-bordered ${err}`} onChange={(e) => setUsername(e.target.value)} />
                                 </div>
                                 <div className="input-item">
-                                    <input type="text" placeholder="Your Email" className="input-bordered" onChange={(e) => setEmail(e.target.value)} />
+                                    <input type="text" placeholder="Your Email" className={`input-bordered ${err}`} onChange={(e) => setEmail(e.target.value)} />
                                 </div>
                                 <div className="input-item">
-                                    <input type="password" placeholder="Password" className="input-bordered" onChange={(e) => setPassword(e.target.value)} />
+                                    <input type={showPass ? 'text' : 'password'} placeholder="Password" className={`input-bordered ${err}`} onChange={(e) => setPassword(e.target.value)} />
+                                    <i className={showPass ? 'far fa-eye-slash' : 'far fa-eye'} onClick={()=> setShowPass(!showPass)}></i> 
                                 </div>
                                 <div className="input-item">
-                                    <input type="password" placeholder="Repeat Password" className="input-bordered" onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <input type="password" placeholder="Confirm Password" className={`input-bordered ${err}`} onChange={(e) => setConfirmPassword(e.target.value)} />
                                 </div>
                                 <div className="input-item">
                                     <select className="country-select input-bordered " name="Nationality" id="Nationality" onChange={(e) => setPlanType(e.target.value)}>

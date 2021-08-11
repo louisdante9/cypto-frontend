@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import btcValue from 'btc-value';
 import { logout, fetchAUserDetails, updateUser } from '../../actions';
 import AdminHeader from '../Commons/AdminHeader'
 import AdminSideNav from '../Commons/AdminSideNav'
